@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+    <!-- Load jQuery before Bootstrap and other scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="container logincontainer">
+        <div class="row justify-content-start"> 
+            <div class="col-md-4"> 
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                <div class="card shadow logincard"> 
+                    <div class="card-body">
+                      <form method="post" action="{% url 'login' %}" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" id="username" name="username" class="form-control" required placeholder="Enter your username">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="password" name="password" class="form-control" required placeholder="Enter your password">
+                            </div>
+                            <div class="form-group">
+                                <div class="d-flex align-items-center">
+                                    <img id="captcha-image" src="{% url 'captcha-image' captcha_key %}" alt="Captcha" class="img-fluid mb-2 mr-2" />
+                                    <button type="button" id="refresh-captcha" class="btn btn-link p-0" title="Refresh CAPTCHA">
+                                        <i class="fas fa-sync-alt"></i> 
+                                    </button>
+                                    <input type="text" id="captcha" name="captcha" required class="form-control ml-2" placeholder="Enter the captcha">
+                                </div>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input type="checkbox" id="rememberMe" name="rememberMe" class="form-check-input">
+                                <label class="form-check-label" for="rememberMe">Remember Me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            <input type="hidden" name="captcha_key" id="captcha-key" value="{{ captcha_key }}" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap and Popper.js scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
+
+    <script>
+        $(document).ready(function() {
+            $('#refresh-captcha').click(function() {
+                $('#refresh-captcha i').addClass('fa-spin');
+                $.ajax({
+                    url: '{% url "captcha-refresh" %}', 
+                    type: 'GET',
+                    success: function(data) {
+                        console.log(data);
+                        console.log(data.captcha_key)
+                        $('#captcha-image').attr('src', '/captcha/image/' + data.key + '/');
+                        $('#captcha-key').val(data.captcha_key); 
+                        $('#refresh-captcha i').removeClass('fa-spin');
+                    },
+                    error: function() {
+                        alert("Failed to refresh captcha. Please try again.");
+                        $('#refresh-captcha i').removeClass('fa-spin');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

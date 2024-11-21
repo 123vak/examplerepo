@@ -1,0 +1,56 @@
+
+{% extends "LoginLogout/mainPage.html" %}
+
+
+    {% block content%}
+<div class="container mt-4">
+  
+    <h4 class="mb-3">Branch Search</h4>
+    <form>
+        
+         {% csrf_token %}
+        <div class="row mb-3">
+            <!-- Branch Name -->
+            <div class="col-md-6">
+                <label for="branchName" class="form-label">Branch Name</label>
+                <input type="text" class="form-control" id="branchName" name="branchName" placeholder="Enter branch name">
+            </div>
+            <!-- Branch Code -->
+            <div class="col-md-6">
+                <label for="branchCode" class="form-label">Branch Code</label>
+                <input type="text" class="form-control" id="branchCode" placeholder="Enter branch code">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <!-- From Date -->
+            <div class="col-md-6">
+                <label for="fromDate" class="form-label">From Date</label>
+                <input type="date" class="form-control" id="fromDate">
+            </div>
+            <!-- To Date -->
+            <div class="col-md-6">
+                <label for="toDate" class="form-label">To Date</label>
+                <input type="date" class="form-control" id="toDate">
+            </div>
+        </div>
+
+        <!-- Search Button -->
+        <div class="text-end">
+            <button type="button" class="btn btn-primary" id="btnsearch">Search</button>
+        </div>
+    </form>
+</div>
+
+<form id="fileUploadForm" enctype="multipart/form-data">
+    <label for="excelFileInput">Choose an Excel file to upload:</label>
+    <input type="file" id="excelFileInput" name="excel_file" accept=".xlsx, .xls, .csv" required>
+    <button type="button" id="bnupload">Upload</button>
+</form>
+
+<table class="table table-striped" id="tableid">
+
+  </table>
+
+{% endblock %}
+
